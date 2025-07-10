@@ -13,6 +13,10 @@
                 }
 
                 let json = await response.json();
+                json = json.map(item => {
+                    item.isFav = false;
+                    return item;
+                })
                 localStorage.setItem("neyItems", JSON.stringify(json));
                 return json;
             } catch (error) {
