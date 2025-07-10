@@ -1,4 +1,22 @@
-(() => {
+// Burası siteye jquery eklemek için, jquery ile daha kolay erişebildim bazı variablelara
+new Promise((resolve, reject) => {
+  var jqueryCdn = document.createElement("script");
+  jqueryCdn.onload = resolve;
+  jqueryCdn.onerror = reject;
+  jqueryCdn.src =
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js";
+  jqueryCdn.type = "text/javascript";
+  document.getElementsByTagName("head")[0].appendChild(jqueryCdn);
+  var fontAwesomeCdn = document.createElement("script");
+  fontAwesomeCdn.onload = resolve;
+  fontAwesomeCdn.onerror = reject;
+  fontAwesomeCdn.src =
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js";
+  fontAwesomeCdn.type = "text/javascript";
+  document.getElementsByTagName("head")[0].appendChild(fontAwesomeCdn);
+}).then(addCarousel);
+
+function addCarousel() {
     // Ana sayfadaysak fonksiyona giriyor yoksa direkt çıkıyor
     if($(`link[rel="canonical"]`).attr("href") === "https://www.e-bebek.com") {
         let items = [];
@@ -41,4 +59,4 @@
     } else {
         console.log("wrong page");
     }
-})();
+};
