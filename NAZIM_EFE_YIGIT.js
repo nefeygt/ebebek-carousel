@@ -101,14 +101,13 @@ function addCarousel() {
                 width: calc((690px / 2) - 20px);
             }
         }
-
-        /* değiştirilebilir en son
+            /* TELEFONDA ÇALIŞTIRMAK İÇİN
         @media (max-width: 576px) {
             .ney-container {
-                max-width: 540px;
+                width: 400px;
             }
             .ney-product {
-                width: 300px;
+                width: 380px;
             }
         } */
 
@@ -122,6 +121,11 @@ function addCarousel() {
             background-color: #fef6eb;
             background-position: 18px;
             left: -65px;
+        }
+        .ney-button-left:hover, .ney-button-right:hover {
+            cursor: pointer;
+            background-color: #fff;
+            border: 1px solid #f28e00;
         }
         .ney-button-right {
             position: absolute;
@@ -169,32 +173,6 @@ function addCarousel() {
             gap: 20px;
             transition: transform .3s ease-in-out;
         }
-        .ney-prev {
-            background: url(/assets/svg/prev.svg) no-repeat;
-            background-color: #fef6eb;
-            background-position: 18px;
-            left: -65px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 50%;
-            top: auto;
-            border: 1px solid #0000;
-        }
-        .ney-next {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            position: absolute;
-            bottom: 50%;
-            top: auto;
-            background: url(/assets/svg/next.svg) no-repeat;
-            background-color: #fef6eb;
-            background-position: 18px;
-            right: -65px;
-            border: 1px solid #0000;
-        }
         .ney-product {
             width: 242px;
             border: 1px solid #ededed;
@@ -202,10 +180,12 @@ function addCarousel() {
             position: relative;
             margin-left: 0px;
             margin-bottom: 30px;
+            /* TRANSITION EKLEDİM */
+            transition: all 0.3s ease;
         }
         .ney-product:hover {
             border:1px solid #f28e00;
-            box-shadow: 0 0 0 0 #00000030, inset 0 0 0 3px #f28e00;
+            box-shadow: inset 0 0 0 2px #f28e00;
             color: #7d7d7d;
             cursor: pointer;
         }
@@ -318,19 +298,12 @@ function addCarousel() {
             font-weight: 700;
             margin-top: 25px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
         }
         .ney-sepet-buton:hover {
             background-color: #f28e00;
             color: #fff;
-        }
-        .ney-product-fav img[src*="default-hover-favorite"] {
-            transform: scale(2); /* svg kendinden çemberli olduğu için */
-        }
-        .ney-product-fav img[src*="added-hover-favorite"] {
-            transform: scale(2); /* svg kendinden çemberli olduğu için */
-        }
-        .ney-product-fav img[src*="added-favorite"] {
-            transform: scale(2); /* svg kendinden çemberli olduğu için */
         }`;
         let emptyHeart = `<img id="ney-default-favorite" src="https://www.e-bebek.com/assets/svg/default-favorite.svg" alt="heart" class="ney-heart-empty">`;
         let filledHeart = `<img src="https://www.e-bebek.com/assets/svg/added-favorite.svg" alt="heart fill" class="ney-heart-filled">`;
@@ -422,15 +395,18 @@ function addCarousel() {
             // Yeni sekmede ürünün sayfası
             $(".ney-product").on("click", function () {
                 let url = $(this).data("url");
-                if (url) window.open(url, "_blank");
+                if (url) {
+                    window.open(url, "_blank");
+                }
             });
 
             $(".ney-sepet-buton").on("click", function (e) {
+                // Sepete ekleye basınca linke gitmesin diye
                 e.stopPropagation();
             });
             // Kalbe tıklayınca olacaklar
             $(".ney-product-fav").on("click", function (e) {
-                // Tıklayınca ürünün sayfasına gitmesin diye
+                // Kalbe basınca linke gitmesin diye
                 e.stopPropagation();
                 // O iteme ulaşmanın en yakın yolu
                 let itemLink = $(this).closest(".ney-product").data("url");
@@ -441,8 +417,10 @@ function addCarousel() {
 
                 if(curItem.isFav) {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite.svg");
+                    img.removeAttr('id');
                 } else {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/default-favorite.svg");
+                    img.attr('id', 'ney-default-favorite');
                 }
 
                 localStorage.setItem("neyItems", JSON.stringify(items));
@@ -450,19 +428,20 @@ function addCarousel() {
 
             // Hoverı burada yapmak daha kolay
             $(".ney-product-fav").on("mouseenter", function () {
-                let itemLink = $(this).prev("div").attr("href");
+                let itemLink = $(this).closest(".ney-product").data("url");
                 let curItem = items.find(item => item.url === itemLink);
                 const img = $(this).find("img");
 
                 if (curItem.isFav) {
-                    img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite-hover.svg");
+                    img.attr("src", filledHover);
                 } else {
-                    img.attr("src", "https://www.e-bebek.com/assets/svg/default-hover-favorite.svg");
+                    img.attr("src", emptyHover);
+                    img.removeAttr('id');
                 }
             });
 
             $(".ney-product-fav").on("mouseleave", function () {
-                let itemLink = $(this).prev("div").attr("href");
+                let itemLink = $(this).closest(".ney-product").data("url");
                 let curItem = items.find(item => item.url === itemLink);
                 const img = $(this).find("img");
 
@@ -470,11 +449,13 @@ function addCarousel() {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite.svg");
                 } else {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/default-favorite.svg");
+                    img.attr('id', 'ney-default-favorite');
                 }
             });
 
             // Resize olunca
             window.addEventListener('resize', () => {
+                // Medianın hangisine giriyor diye bakmak için
                 let windowWidth = window.innerWidth;
 
                 if (windowWidth < 768) {
@@ -496,34 +477,22 @@ function addCarousel() {
             });
 
             $(".ney-button-left").on("click", function () {
-                console.log("Slider Info:", sliderInfo);
-
-                //ney-product'ın o anki widht'ini al
+                // İlk slaytta değilse
                 if (sliderInfo.currentSlide >= sliderInfo.shownItem) {
-
-                    console.log("Current Slide:", sliderInfo.currentSlide);
                     sliderInfo.currentSlide--;
+                    // Bir adet ürünün o anki widthi
                     let productWidth = $(".ney-product").outerWidth(true);
                     $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + "px)");
-                } else {
-                    console.log("Current Slide is already at the beginning");
                 }
-
             });
 
             $(".ney-button-right").on("click", function () {
-                console.log("Slider Info:", sliderInfo);
-
+                // Son slaytta değilse
                 if (sliderInfo.currentSlide < items.length) {
-                    console.log("Current Slide:", sliderInfo.currentSlide);
-
                     sliderInfo.currentSlide++;
                     let productWidth = $(".ney-product").outerWidth(true);
                     $(".ney-products").css("transform", "translateX(-" + ((sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + 20)+ "px)");
 
-                }
-                else {
-                    console.log("Current Slide is already at the end");
                 }
             });
         }
