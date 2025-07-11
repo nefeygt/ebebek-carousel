@@ -26,9 +26,11 @@ function addCarousel() {
     // Ana sayfadaysak fonksiyona giriyor yoksa direkt çıkıyor
     if($(`link[rel="canonical"]`).attr("href") === "https://www.e-bebek.com") {
         let items = [];
+        // Site ilk açıldığında full screenken, default ayarlar
         let sliderInfo = {
             currentSlide: 5,
-            shownItem: 5
+            shownItem: 5,
+            productWidth: 244
         };
         let html = `<div class="ney-container">
                         <div class="ney-button-left"></div>
@@ -483,15 +485,16 @@ function addCarousel() {
                 } else {
                     sliderInfo.shownItem = 5;
                 }
+
+                // Anlık window widthine göre bir adet ürünün widhti
+                sliderInfo.productWidth = $(".ney-product").outerWidth(true);
             });
 
             $(".ney-button-left").on("click", function () {
                 // İlk slaytta değilse
-                if (sliderInfo.currentSlide >= sliderInfo.shownItem) {
+                if (sliderInfo.currentSlide > sliderInfo.shownItem) {
                     sliderInfo.currentSlide--;
-                    // Bir adet ürünün o anki widthi
-                    let productWidth = $(".ney-product").outerWidth(true);
-                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + "px)");
+                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth + "px)");
                 }
             });
 
@@ -499,8 +502,7 @@ function addCarousel() {
                 // Son slaytta değilse
                 if (sliderInfo.currentSlide < items.length) {
                     sliderInfo.currentSlide++;
-                    let productWidth = $(".ney-product").outerWidth(true);
-                    $(".ney-products").css("transform", "translateX(-" + ((sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + 20)+ "px)");
+                    $(".ney-products").css("transform", "translateX(-" + ((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth - 28 ) + "px)");
 
                 }
             });
