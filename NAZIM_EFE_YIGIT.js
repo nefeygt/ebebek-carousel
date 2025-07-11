@@ -356,10 +356,18 @@ function addCarousel() {
         // Ürünleri ekliyoruz
         function addItems(arr) {
             arr.forEach(item => {
+                // Önceden fava eklenmiş mi
                 let heart = emptyHeart;
                 if(item.isFav) {
                     heart = filledHeart;
                 }
+                
+                // İndirimli mi değil mi
+                let discountHTML = '';
+                if(item.price < item.original_price) {
+                    discountHTML = `<p>Sepette ${item.price} TL!</p>`;
+                }
+                
                 let itemHTML = `<div class="ney-product" data-url="${item.url}">
                                     <div class="ney-product-fav">
                                         <!-- KALP BURAYA -->
@@ -380,7 +388,7 @@ function addCarousel() {
                                     </div>
                                     <div class="ney-product-indirim">
                                         <!-- EĞER İNDİRİM VARSA BUNUN İÇİ DOLU YOKSA BU DİREKT YOK -->
-                                        <p>Sepette ${item.price} TL!</p>
+                                        ${discountHTML}
                                     </div>
                                     <div class="ney-sepet">
                                         <button type="submit" class="ney-sepet-buton">Sepete Ekle</button>
@@ -509,3 +517,9 @@ function addCarousel() {
         console.log("wrong page");
     }
 };
+
+
+// BENİM GÖRDÜĞÜM PROBLEMLER
+// svgler sıkıntılı boş olan büyük diğerleri aynı
+// ürün linklerinin bir kısmı patlak
+// son üründe zam olmuş indirim olmamış
