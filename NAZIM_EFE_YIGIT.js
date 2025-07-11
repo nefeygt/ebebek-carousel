@@ -365,7 +365,8 @@ function addCarousel() {
                 // İndirimli mi değil mi
                 let discountHTML = '';
                 if(item.price < item.original_price) {
-                    discountHTML = `<p>Sepette ${item.price} TL!</p>`;
+                    let discountRate = Math.floor(100 - ((item.price * 100) / item.original_price));
+                    discountHTML = `<p>%${discountRate} indirim! Sepette sadece ${item.price} TL!</p>`;
                 }
                 
                 let itemHTML = `<div class="ney-product" data-url="${item.url}">
