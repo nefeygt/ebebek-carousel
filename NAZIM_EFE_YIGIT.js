@@ -542,8 +542,9 @@ function addCarousel() {
             });
         }
 
-        (function init() {
-            loadItems();
+        // İlk açılışta boş localStorage'da sıkıntı çıktığı için async
+        (async function init() {
+            await loadItems();
             clear();
             addComponents();
             addItems(items);
