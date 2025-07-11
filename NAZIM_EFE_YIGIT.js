@@ -243,6 +243,29 @@ function addCarousel() {
             height: 42px;
             overflow: hidden;
         }
+        .ney-product-discount {
+            padding-left: 24px;
+            padding-bottom: 12px;
+        }
+        .ney-product-discount-old {
+            font-size: 1.4rem;
+            font-weight: 500;
+            text-decoration: line-through;
+        }
+        .ney-product-discount-percent {
+            color: #00a365;
+            font-size: 18px;
+            font-weight: 700;
+            display: inline-flex;
+            justify-content: center;
+            margin-left: .5rem !important;
+        }
+        .ney-product-discount-icon {
+            display: inline-block;
+            height: 22px;
+            font-size: 22px;
+            margin-left: 3px;
+        }
         .ney-product-price {
             position: relative;
             display: flex;
@@ -364,9 +387,22 @@ function addCarousel() {
                 
                 // İndirimli mi değil mi
                 let discountHTML = '';
+                // İndirimi ekleyince kaymasın diye
+                let fixMarginIndirim = "";
+                let fixMarginName = "";
+                let fixMarginPrice = "";
                 if(item.price < item.original_price) {
                     let discountRate = Math.floor(100 - ((item.price * 100) / item.original_price));
-                    discountHTML = `<p>%${discountRate} indirim! Sepette sadece ${item.price} TL!</p>`;
+                    discountHTML = `<div class="ney-product-discount">
+                                        <span class="ney-product-discount-old">${item.original_price} TL</span>
+                                        <span class="ney-product-discount-percent">
+                                        %${discountRate}
+                                        <i class="ney-product-discount-icon icon-decrease"></i>
+                                        </span>
+                                    </div>`;
+                    fixMarginIndirim = `style="margin-bottom: 0;"`;
+                    fixMarginName = `style="margin-bottom: -12px;"`;
+                    fixMarginPrice = `style="margin-bottom: 36px;"`;
                 }
                 
                 let itemHTML = `<div class="ney-product" data-url="${item.url}">
@@ -377,19 +413,19 @@ function addCarousel() {
                                     <div class="ney-product-image">
                                         <img class="ney-image-element" alt="${item.name}" src="${item.img}">
                                     </div>
-                                    <div class="ney-product-name">
+                                    <div class="ney-product-name" ${fixMarginName}>
                                         <h2 class="ney-product-name-text">
                                             <b> ${item.brand} -</b>
                                             <span> ${item.name} </span>
                                         </h2>
                                     </div>
-                                    <div class="ney-product-price">
+                                    ${discountHTML}
+                                    <div class="ney-product-price" ${fixMarginPrice}>
                                         <!-- EĞER KAYARSA ORİJİNAL SİTEDE BURADA BİR ELEMENT VAR O ALINABİLİR -->
-                                        <span class="ney-product-price-text">${item.original_price} TL</span>
+                                        <span class="ney-product-price-text">${item.price} TL</span>
                                     </div>
-                                    <div class="ney-product-indirim">
+                                    <div class="ney-product-indirim" ${fixMarginIndirim}>
                                         <!-- EĞER İNDİRİM VARSA BUNUN İÇİ DOLU YOKSA BU DİREKT YOK -->
-                                        ${discountHTML}
                                     </div>
                                     <div class="ney-sepet">
                                         <button type="submit" class="ney-sepet-buton">Sepete Ekle</button>
@@ -493,7 +529,7 @@ function addCarousel() {
                 // İlk üründe değilse
                 if (sliderInfo.currentSlide > sliderInfo.shownItem) {
                     sliderInfo.currentSlide--;
-                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth) + 20) + "px)");
+                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth)) + "px)");
                 }
             });
             // İleri butonu
@@ -501,7 +537,7 @@ function addCarousel() {
                 // Son üründe değilse
                 if (sliderInfo.currentSlide < items.length) {
                     sliderInfo.currentSlide++;
-                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth) + 20) + "px)");
+                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth)) + "px)");
                 }
             });
         }
