@@ -1,26 +1,34 @@
 // Burası siteye jquery eklemek için, jquery ile daha kolay erişiyorum variablelara
 new Promise((resolve, reject) => {
-  var jqueryCdn = document.createElement("script");
-  jqueryCdn.onload = resolve;
-  jqueryCdn.onerror = reject;
-  jqueryCdn.src =
-    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js";
-  jqueryCdn.type = "text/javascript";
-  document.getElementsByTagName("head")[0].appendChild(jqueryCdn);
-  var fontAwesomeCdn = document.createElement("script");
-  fontAwesomeCdn.onload = resolve;
-  fontAwesomeCdn.onerror = reject;
-  fontAwesomeCdn.src =
-    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js";
-  fontAwesomeCdn.type = "text/javascript";
-  document.getElementsByTagName("head")[0].appendChild(fontAwesomeCdn);
-}).then(addCarousel);
+    const loadScript = (src) => {
+        return new Promise((res, rej) => {
+            const script = document.createElement("script");
+            script.onload = res;
+            script.onerror = rej;
+            script.src = src;
+            script.type = "text/javascript";
+            document.getElementsByTagName("head")[0].appendChild(script);
+        });
+    };
+
+    Promise.all([
+        loadScript("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"),
+        loadScript("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/js/all.min.js")
+    ])
+    .then(resolve)
+    .catch(reject);
+}).then(addCarousel)
+.catch(error => {
+    console.error("Failed to load necessary scripts:", error);
+});
 
 function addCarousel() {
     // Ana sayfadaysak fonksiyona giriyor yoksa direkt çıkıyor
     if($(`link[rel="canonical"]`).attr("href") === "https://www.e-bebek.com") {
         let items = [];
         let html = `<div class="ney-container">
+                        <div class="ney-button-left"></div>
+                        <div class="ney-button-right"></div>
                         <div class="ney-header">
                             <div class="ney-title">
                                 <h2 class="ney-title-primary">Beğenebileceğinizi Düşündüklerimiz</h2>
@@ -31,13 +39,6 @@ function addCarousel() {
                                 <!-- BİR ADET ÜRÜNÜN KODU, DİNAMİK JS İLE OLUŞTURULACAK, BEN ÖRNEK DOLDURDUM İLK İTEM İLE TOPLAM 8 İTEM VAR-->
                                 
                             </div>
-                            <!-- SİTEDE BUTONLAR DISABLED OLSA BİLE CURSOR POINTER GÖSTERİYOR ONU DÜZELTİCEM -->
-                            <div class="ney-button-left">
-                                <button aria-label="back" class="ney-prev"></button>
-                            </div>
-                            <div class="ney-button-right">
-                                <button aria-label="back" class="ney-next"></button>
-                            </div>
                         </div>
                     </div>`;
         let css = `.ney-container {
@@ -46,14 +47,16 @@ function addCarousel() {
             padding-top: 20px;
             padding-bottom: 50px;
             min-width: 0 !important;
-            width: 100%;
+            width: 1320px;
             padding-right: 15px;
             padding-left: 15px;
             margin-right: auto;
             margin-left: auto;
             max-width: 1320px;
+            position: relative;
+            gap: 20px;
         }
-        @media (min-width: 1580px) {
+        @media (max-width: 1580px) {
             .ney-container {
                 max-width: 1320px;
             }
@@ -61,7 +64,7 @@ function addCarousel() {
                 width: 237.2px;
             }
         }
-        @media (min-width: 1480px) {
+        @media (max-width: 1480px) {
             .ney-container {
                 max-width: 1296px;
             }
@@ -69,7 +72,7 @@ function addCarousel() {
                 width: 272.5px;
             }
         }
-        @media (min-width: 1280px) {
+        @media (max-width: 1280px) {
             .ney-container {
                 max-width: 1180px;
             }
@@ -77,7 +80,7 @@ function addCarousel() {
                 width: 296.667px;
             }
         }
-        @media (min-width: 992px) {
+        @media (max-width: 992px) {
             .ney-container {
                 max-width: 960px;
             }
@@ -85,7 +88,7 @@ function addCarousel() {
                 width: 335px;
             }
         }
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .ney-container {
                 max-width: 720px;
             }
@@ -93,13 +96,38 @@ function addCarousel() {
                 width: 245px;
             }
         }
-        @media (min-width: 576px) {
+        @media (max-width: 576px) {
             .ney-container {
                 max-width: 540px;
             }
             .ney-product {
                 width: 300px;
             }
+        }
+        .ney-button-left {
+            position: absolute;
+            top: 50%;
+            background: url(https://cdn06.e-bebek.com/assets/svg/prev.svg) no-repeat;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #fef6eb;
+            background-position: 18px;
+            left: -65px;
+        }
+        .ney-button-right {
+            position: absolute;
+            top: 50%;
+            background: url(https://cdn06.e-bebek.com/assets/svg/next.svg) no-repeat;
+            background-color: #fef6eb;
+            background-position: 18px;
+            right: -65px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+        .ney-header {
+            width: 100%;
         }
         .ney-title {
             display: flex;
@@ -126,12 +154,11 @@ function addCarousel() {
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             display: flex;
+            overflow: hidden;
         }
         .ney-products {
             display: flex;
-        }
-        .ney-button-left {
-
+            gap: 20px;
         }
         .ney-prev {
             background: url(/assets/svg/prev.svg) no-repeat;
@@ -145,9 +172,6 @@ function addCarousel() {
             bottom: 50%;
             top: auto;
             border: 1px solid #0000;
-        }
-        .ney-button-right {
-            
         }
         .ney-next {
             width: 50px;
@@ -164,13 +188,17 @@ function addCarousel() {
         }
         .ney-product {
             width: 242px;
-            margin-right: 20px;
+            border: 1px solid #ededed;
+            border-radius: 10px;
+            position: relative;
+            margin-left: 0px;
+            margin-bottom: 30px;
         }
         .ney-product:hover {
+            border:1px solid #f28e00;
             box-shadow: 0 0 0 0 #00000030, inset 0 0 0 3px #f28e00;
             color: #7d7d7d;
             cursor: pointer;
-            z-index: 2;
         }
         .ney-product-fav {
             position: absolute;
@@ -182,6 +210,7 @@ function addCarousel() {
             box-shadow: 0 2px 4px 0 #00000024;
             width: 50px;
             height: 50px;
+            z-index: 1;
         }
         #ney-default-favorite {
             width: 25px;
@@ -205,6 +234,7 @@ function addCarousel() {
         .ney-product img {
             display: block;
             width: 100%;
+            margin-bottom: 26px;
         }
         .ney-product-image img {
             max-height: 100%;
@@ -212,12 +242,17 @@ function addCarousel() {
             transform: scale(1);
             opacity: 1;
             transition: all .6s;
+            padding: 24px;
+        }
+        .ney-product-name {
+            padding-left: 24px;
+            padding-right: 28px;
+            margin-bottom: 30px;
         }
         .ney-product-name-text {
             font-size: 1.2rem;
             height: 42px;
             overflow: hidden;
-            margin-bottom: 10px;
         }
         .ney-product-price {
             position: relative;
@@ -225,6 +260,7 @@ function addCarousel() {
             justify-content: flex-end;
             flex-direction: column;
             height: 43px;
+            padding: 24px;
         }
         .ney-product-price-text {
             display: block;
@@ -234,7 +270,8 @@ function addCarousel() {
         }
         .ney-product-indirim {
             min-height: 70px;
-            padding-left: 7.5px;
+            padding-left: 13.5px;
+            margin-bottom: 40px;
         }
         .ney-product-indirim p {
             background: #eaf8f3;
@@ -276,11 +313,20 @@ function addCarousel() {
         .ney-sepet-buton:hover {
             background-color: #f28e00;
             color: #fff;
+        }
+        .ney-product-fav img[src*="default-hover-favorite"] {
+            transform: scale(2); /* svg kendinden çemberli olduğu için */
+        }
+        .ney-product-fav img[src*="added-hover-favorite"] {
+            transform: scale(2); /* svg kendinden çemberli olduğu için */
+        }
+        .ney-product-fav img[src*="added-favorite"] {
+            transform: scale(2); /* svg kendinden çemberli olduğu için */
         }`;
-        let emptyHeart = `<img id="ney-default-favorite" src="assets/svg/default-favorite.svg" alt="heart" class="ney-heart-icon">
-                          <img src="assets/svg/default-hover-favorite.svg" alt="heart" class="ney-heart-icon hovered">`;
-        let filledHeart = `<img src="assets/svg/added-favorite.svg" alt="heart fill" class="ney-heart-icon">
-                           <img src="assets/svg/added-favorite-hover.svg" alt="heart fill" class="ney-heart-icon hovered">`;
+        let emptyHeart = `<img id="ney-default-favorite" src="https://www.e-bebek.com/assets/svg/default-favorite.svg" alt="heart" class="ney-heart-empty">`;
+        let filledHeart = `<img src="https://www.e-bebek.com/assets/svg/added-favorite.svg" alt="heart fill" class="ney-heart-filled">`;
+        let emptyHover = "https://www.e-bebek.com/assets/svg/default-hover-favorite.svg";
+        let filledHover = "https://www.e-bebek.com/assets/svg/added-favorite-hover.svg";
 
         // GET request ürünleri çekmek için
         async function getData() {
@@ -328,18 +374,22 @@ function addCarousel() {
         // Ürünleri ekliyoruz
         function addItems(arr) {
             arr.forEach(item => {
+                let heart = emptyHeart;
+                if(item.isFav) {
+                    heart = filledHeart;
+                }
                 let itemHTML = `<div class="ney-product">
-                                    <div class="ney-product-link"></div>
+                                    <div class="ney-product-link" href="https://www.e-bebek.com/hellobaby-yenidogan-6li-agiz-mendili-24x24cm-unisex-p-24ghlbumnd007001"></div>
                                     <div class="ney-product-fav">
-                                        <!-- SİTEDEN OLDUĞU GİBİ ALDIM -->
                                         <!-- KALP BURAYA -->
+                                        ${heart}
                                     </div>
                                     <div class="ney-product-image">
                                         <img class="ney-image-element" alt="${item.name}" src="${item.img}">
                                     </div>
                                     <div class="ney-product-name">
                                         <h2 class="ney-product-name-text">
-                                            <b> ${item.brand} </b>
+                                            <b> ${item.brand} -</b>
                                             <span> ${item.name} </span>
                                         </h2>
                                     </div>
@@ -360,11 +410,57 @@ function addCarousel() {
             });
         }
         
+        function handleEventListenerSet() {
+            // Kalbe tıklayınca olacaklar
+            $(".ney-product-fav").on("click", function () {
+                // O iteme ulaşmanın en yakın yolu
+                let itemLink = $(this).prev("div").attr("href");
+                let curItem = items.find(item => item.url === itemLink);
+                const img = $(this).find("img");
+
+                curItem.isFav = !curItem.isFav;
+
+                if(curItem.isFav) {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite.svg");
+                } else {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/default-favorite.svg");
+                }
+
+                localStorage.setItem("neyItems", JSON.stringify(items));
+            });
+
+            // Hoverı burada yapmak daha kolay
+            $(".ney-product-fav").on("mouseenter", function () {
+                let itemLink = $(this).prev("div").attr("href");
+                let curItem = items.find(item => item.url === itemLink);
+                const img = $(this).find("img");
+
+                if (curItem.isFav) {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite-hover.svg");
+                } else {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/default-hover-favorite.svg");
+                }
+            });
+
+            $(".ney-product-fav").on("mouseleave", function () {
+                let itemLink = $(this).prev("div").attr("href");
+                let curItem = items.find(item => item.url === itemLink);
+                const img = $(this).find("img");
+
+                if (curItem.isFav) {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite.svg");
+                } else {
+                    img.attr("src", "https://www.e-bebek.com/assets/svg/default-favorite.svg");
+                }
+            });
+        }
+
         (function init() {
             loadItems();
             clear();
             addComponents();
             addItems(items);
+            handleEventListenerSet();
         })();
 
     } else {
