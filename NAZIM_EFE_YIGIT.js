@@ -26,6 +26,10 @@ function addCarousel() {
     // Ana sayfadaysak fonksiyona giriyor yoksa direkt çıkıyor
     if($(`link[rel="canonical"]`).attr("href") === "https://www.e-bebek.com") {
         let items = [];
+        let sliderInfo = {
+            currentSlide: 5,
+            shownItem: 5
+        };
         let html = `<div class="ney-container">
                         <div class="ney-button-left"></div>
                         <div class="ney-button-right"></div>
@@ -48,54 +52,57 @@ function addCarousel() {
             padding-bottom: 50px;
             min-width: 0 !important;
             width: 1320px;
-            padding-right: 15px;
-            padding-left: 15px;
             margin-right: auto;
             margin-left: auto;
             max-width: 1320px;
             position: relative;
             gap: 20px;
         }
+        .ney-products .ney-product {
+            width: calc((1320px / 5) - 20px);
+        }
         @media (max-width: 1580px) {
             .ney-container {
-                max-width: 1320px;
+                width: 1320px;
             }
-            .ney-product {
-                width: 237.2px;
+            .ney-products .ney-product {
+                width: calc((1320px / 5) - 20px);
             }
         }
         @media (max-width: 1480px) {
             .ney-container {
-                max-width: 1296px;
+                width: 1296px;
             }
-            .ney-product {
-                width: 272.5px;
+            .ney-products .ney-product {
+                width: calc((1296px / 4) - 48px);
             }
         }
         @media (max-width: 1280px) {
             .ney-container {
-                max-width: 1180px;
+                width: 930px;
             }
-            .ney-product {
-                width: 296.667px;
+            .ney-products .ney-product {
+                width: calc((930px / 3) - 20px);
             }
         }
         @media (max-width: 992px) {
             .ney-container {
-                max-width: 960px;
+                width: 720px;
             }
-            .ney-product {
-                width: 335px;
+            .ney-products .ney-product {
+                width: calc((720px / 2) - 20px);
             }
         }
         @media (max-width: 768px) {
             .ney-container {
-                max-width: 720px;
+                width: 690px;
             }
             .ney-product {
-                width: 245px;
+                width: calc((690px / 2) - 20px);
             }
         }
+
+        /* değiştirilebilir en son
         @media (max-width: 576px) {
             .ney-container {
                 max-width: 540px;
@@ -103,7 +110,8 @@ function addCarousel() {
             .ney-product {
                 width: 300px;
             }
-        }
+        } */
+
         .ney-button-left {
             position: absolute;
             top: 50%;
@@ -159,6 +167,7 @@ function addCarousel() {
         .ney-products {
             display: flex;
             gap: 20px;
+            transition: transform .3s ease-in-out;
         }
         .ney-prev {
             background: url(/assets/svg/prev.svg) no-repeat;
@@ -451,6 +460,60 @@ function addCarousel() {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/added-favorite.svg");
                 } else {
                     img.attr("src", "https://www.e-bebek.com/assets/svg/default-favorite.svg");
+                }
+            });
+
+            // Resize olunca
+            window.addEventListener('resize', () => {
+                let windowWidth = window.innerWidth;
+
+                if (windowWidth < 768) {
+                    sliderInfo.shownItem = 2;
+                } else if (windowWidth >= 768 && windowWidth < 992) {
+                    sliderInfo.shownItem = 2;
+                }
+                else if (windowWidth >= 992 && windowWidth < 1280) {
+                    sliderInfo.shownItem = 3;
+                }
+                else if (windowWidth >= 1280 && windowWidth < 1480) {
+                    sliderInfo.shownItem = 4;
+                }
+                else if (windowWidth >= 1480 && windowWidth < 1580) {
+                    sliderInfo.shownItem = 5;
+                } else {
+                    sliderInfo.shownItem = 5;
+                }
+            });
+
+            $(".ney-button-left").on("click", function () {
+                console.log("Slider Info:", sliderInfo);
+
+                //ney-product'ın o anki widht'ini al
+                if (sliderInfo.currentSlide >= sliderInfo.shownItem) {
+
+                    console.log("Current Slide:", sliderInfo.currentSlide);
+                    sliderInfo.currentSlide--;
+                    let productWidth = $(".ney-product").outerWidth(true);
+                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + "px)");
+                } else {
+                    console.log("Current Slide is already at the beginning");
+                }
+
+            });
+
+            $(".ney-button-right").on("click", function () {
+                console.log("Slider Info:", sliderInfo);
+
+                if (sliderInfo.currentSlide < items.length) {
+                    console.log("Current Slide:", sliderInfo.currentSlide);
+
+                    sliderInfo.currentSlide++;
+                    let productWidth = $(".ney-product").outerWidth(true);
+                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + "px)");
+
+                }
+                else {
+                    console.log("Current Slide is already at the end");
                 }
             });
         }
