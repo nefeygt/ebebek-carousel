@@ -537,7 +537,7 @@ function addCarousel() {
                 // Son üründe değilse
                 if (sliderInfo.currentSlide < items.length) {
                     sliderInfo.currentSlide++;
-                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth)) + "px)");
+                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth) - 24) + "px)");
                 }
             });
         }
