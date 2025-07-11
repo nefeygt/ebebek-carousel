@@ -99,20 +99,18 @@ function addCarousel() {
             .ney-container {
                 width: 690px;
             }
-            .ney-product {
+            .ney-products .ney-product {
                 width: calc((690px / 2) - 20px);
             }
         }
-            /* TELEFONDA ÇALIŞTIRMAK İÇİN
         @media (max-width: 576px) {
             .ney-container {
                 width: 400px;
             }
-            .ney-product {
-                width: 380px;
+            .ney-products .ney-product {
+                width: calc((400px/2) - 20px);
             }
-        } */
-
+        }
         .ney-button-left {
             position: absolute;
             top: 50%;
@@ -415,6 +413,7 @@ function addCarousel() {
                 // Sepete ekleye basınca linke gitmesin diye
                 e.stopPropagation();
             });
+            
             // Kalbe tıklayınca olacaklar
             $(".ney-product-fav").on("click", function (e) {
                 // Kalbe basınca linke gitmesin diye
@@ -466,44 +465,43 @@ function addCarousel() {
 
             // Resize olunca
             window.addEventListener('resize', () => {
-                // Medianın hangisine giriyor diye bakmak için
                 let windowWidth = window.innerWidth;
-
+                
                 if (windowWidth < 768) {
                     sliderInfo.shownItem = 2;
                 } else if (windowWidth >= 768 && windowWidth < 992) {
                     sliderInfo.shownItem = 2;
-                }
-                else if (windowWidth >= 992 && windowWidth < 1280) {
+                } else if (windowWidth >= 992 && windowWidth < 1280) {
                     sliderInfo.shownItem = 3;
-                }
-                else if (windowWidth >= 1280 && windowWidth < 1480) {
+                } else if (windowWidth >= 1280 && windowWidth < 1480) {
                     sliderInfo.shownItem = 4;
-                }
-                else if (windowWidth >= 1480 && windowWidth < 1580) {
+                } else if (windowWidth >= 1480 && windowWidth < 1580) {
                     sliderInfo.shownItem = 5;
                 } else {
                     sliderInfo.shownItem = 5;
                 }
-
-                // Anlık window widthine göre bir adet ürünün widhti
+                
+                // Güncel window widthine göre bir adet ürün widthi
                 sliderInfo.productWidth = $(".ney-product").outerWidth(true);
+
+                // Resize olunca garip yerlere kaymasın diye kaldığımız üründen devam ediyor
+                $(".ney-products").css("transform", "translateX(" + -(sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth + "px)");
             });
 
+            // Geri butonu
             $(".ney-button-left").on("click", function () {
-                // İlk slaytta değilse
+                // İlk üründe değilse
                 if (sliderInfo.currentSlide > sliderInfo.shownItem) {
                     sliderInfo.currentSlide--;
-                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth + "px)");
+                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth) + 20) + "px)");
                 }
             });
-
+            // İleri butonu
             $(".ney-button-right").on("click", function () {
-                // Son slaytta değilse
+                // Son üründe değilse
                 if (sliderInfo.currentSlide < items.length) {
                     sliderInfo.currentSlide++;
-                    $(".ney-products").css("transform", "translateX(-" + ((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth - 28 ) + "px)");
-
+                    $(".ney-products").css("transform", "translateX(" + -(((sliderInfo.currentSlide - sliderInfo.shownItem) * sliderInfo.productWidth) + 20) + "px)");
                 }
             });
         }
