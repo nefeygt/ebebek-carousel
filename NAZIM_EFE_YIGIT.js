@@ -180,13 +180,13 @@ function addCarousel() {
             position: relative;
             margin-left: 0px;
             margin-bottom: 30px;
-            /* TRANSITION EKLEDİM */
             transition: all 0.3s ease;
+            font-family: Poppins, "cursive";
+            color: #7d7d7d;
         }
         .ney-product:hover {
             border:1px solid #f28e00;
             box-shadow: inset 0 0 0 2px #f28e00;
-            color: #7d7d7d;
             cursor: pointer;
         }
         .ney-product-fav {
