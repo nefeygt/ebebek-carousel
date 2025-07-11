@@ -387,8 +387,7 @@ function addCarousel() {
                 if(item.isFav) {
                     heart = filledHeart;
                 }
-                let itemHTML = `<div class="ney-product">
-                                    <div class="ney-product-link" href="https://www.e-bebek.com/hellobaby-yenidogan-6li-agiz-mendili-24x24cm-unisex-p-24ghlbumnd007001"></div>
+                let itemHTML = `<div class="ney-product" data-url="${item.url}">
                                     <div class="ney-product-fav">
                                         <!-- KALP BURAYA -->
                                         ${heart}
@@ -420,10 +419,21 @@ function addCarousel() {
         }
         
         function handleEventListenerSet() {
+            // Yeni sekmede ürünün sayfası
+            $(".ney-product").on("click", function () {
+                let url = $(this).data("url");
+                if (url) window.open(url, "_blank");
+            });
+
+            $(".ney-sepet-buton").on("click", function (e) {
+                e.stopPropagation();
+            });
             // Kalbe tıklayınca olacaklar
-            $(".ney-product-fav").on("click", function () {
+            $(".ney-product-fav").on("click", function (e) {
+                // Tıklayınca ürünün sayfasına gitmesin diye
+                e.stopPropagation();
                 // O iteme ulaşmanın en yakın yolu
-                let itemLink = $(this).prev("div").attr("href");
+                let itemLink = $(this).closest(".ney-product").data("url");
                 let curItem = items.find(item => item.url === itemLink);
                 const img = $(this).find("img");
 
@@ -509,7 +519,7 @@ function addCarousel() {
 
                     sliderInfo.currentSlide++;
                     let productWidth = $(".ney-product").outerWidth(true);
-                    $(".ney-products").css("transform", "translateX(-" + (sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + "px)");
+                    $(".ney-products").css("transform", "translateX(-" + ((sliderInfo.currentSlide - sliderInfo.shownItem) * productWidth + 20)+ "px)");
 
                 }
                 else {
